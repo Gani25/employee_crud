@@ -23,6 +23,8 @@ public class EmployeeController {
     @PostMapping("/employee")
     public Employee addEmployee(@RequestBody EmployeeDTO employeeDTO) {
 
+        System.out.println(employeeDTO.toString());
+
         Employee savedEmployee =  employeeService.saveEmployee(employeeDTO);
         return savedEmployee;
 

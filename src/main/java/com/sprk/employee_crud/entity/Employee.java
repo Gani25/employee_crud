@@ -2,10 +2,15 @@ package com.sprk.employee_crud.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "employee")
+@ToString
 public class Employee {
 
     // primary key column
@@ -19,6 +24,9 @@ public class Employee {
 
     @Column(unique = true, nullable = false)
     private String phone;
+
+    @Column(unique = true, nullable = false)
+    private String email;
 
     private String gender;
 

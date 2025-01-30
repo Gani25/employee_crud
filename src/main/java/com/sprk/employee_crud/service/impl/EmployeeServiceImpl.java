@@ -18,6 +18,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     // @Autowired
     private final EmployeeRepository employeeRepository;
 
+    private final EmployeeMapper employeeMapper;
+
     /*
     // constructor injection
     @Autowired
@@ -27,7 +29,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee saveEmployee(EmployeeDTO employeeDTO) {
-        Employee employee = EmployeeMapper.EMPLOYEE_MAPPER.mapEmployeeDTOToEmployee(employeeDTO);
+        Employee employee = employeeMapper.mapEmployeeDTOToEmployee(employeeDTO);
+
+        System.out.println(employee);
 
         Employee savedEmployee =  employeeRepository.save(employee);
         return savedEmployee;
