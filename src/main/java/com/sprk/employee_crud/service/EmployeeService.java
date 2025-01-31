@@ -7,5 +7,5 @@ import com.sprk.employee_crud.repository.EmployeeRepository;
 public interface EmployeeService {
 
     // only abstract methods
-    public Employee saveEmployee(EmployeeDTO employeeDTO);
+    public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO);
 }

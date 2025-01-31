@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
@@ -28,12 +30,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     }*/
 
     @Override
-    public Employee saveEmployee(EmployeeDTO employeeDTO) {
+    public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO) {
         Employee employee = employeeMapper.mapEmployeeDTOToEmployee(employeeDTO);
 
-        System.out.println(employee);
 
+        Optional<Employee> dbOptionalEmployee = employeeRepository.findByEmailOrPhone(employee.getEmail(), employee.getPhone());
+        if(dbOptionalEmployee.isPresent()){
+            return null;
+        }
+
+        // check if employee not exists by same email or phone then only save
+//        System.out.println(employee);
         Employee savedEmployee =  employeeRepository.save(employee);
-        return savedEmployee;
+
+        return employeeMapper.mapEmployeeToEmployeeDTO(savedEmployee);
     }
 }

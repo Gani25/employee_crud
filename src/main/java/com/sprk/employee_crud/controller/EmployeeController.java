@@ -1,11 +1,15 @@
 package com.sprk.employee_crud.controller;
 
+import com.sprk.employee_crud.constant.EmployeeConstants;
 import com.sprk.employee_crud.dto.EmployeeDTO;
+import com.sprk.employee_crud.dto.ResponseDTO;
 import com.sprk.employee_crud.entity.Employee;
 import com.sprk.employee_crud.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,16 +23,27 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
 
-
     // create -> save -> post mapping
     @PostMapping("/employee")
-    public Employee addEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
+    public ResponseEntity<?> addEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
 
-        System.out.println(employeeDTO.toString());
+//        System.out.println(employeeDTO.toString());
 
-        Employee savedEmployee =  employeeService.saveEmployee(employeeDTO);
-        return savedEmployee;
+        EmployeeDTO savedEmployee = employeeService.saveEmployee(employeeDTO);
+        ResponseDTO<EmployeeDTO> responseDTO = new ResponseDTO();
+        if (savedEmployee == null) {
+            responseDTO.setMessage(EmployeeConstants.MESSAGE_400);
+            responseDTO.setStatusCode(EmployeeConstants.STATUS_400);
+            return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);
+
+        } else {
+            responseDTO.setMessage(EmployeeConstants.MESSAGE_201);
+            responseDTO.setStatusCode(EmployeeConstants.STATUS_201);
+            responseDTO.setData(savedEmployee);
+            return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        }
+
 
     }
-    
+
 }
