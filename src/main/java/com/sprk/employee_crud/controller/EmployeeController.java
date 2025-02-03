@@ -31,17 +31,11 @@ public class EmployeeController {
 
         EmployeeDTO savedEmployee = employeeService.saveEmployee(employeeDTO);
         ResponseDTO<EmployeeDTO> responseDTO = new ResponseDTO();
-        if (savedEmployee == null) {
-            responseDTO.setMessage(EmployeeConstants.MESSAGE_400);
-            responseDTO.setStatusCode(EmployeeConstants.STATUS_400);
-            return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);
 
-        } else {
-            responseDTO.setMessage(EmployeeConstants.MESSAGE_201);
-            responseDTO.setStatusCode(EmployeeConstants.STATUS_201);
-            responseDTO.setData(savedEmployee);
-            return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
-        }
+        responseDTO.setMessage(EmployeeConstants.MESSAGE_201);
+        responseDTO.setStatusCode(EmployeeConstants.STATUS_201);
+        responseDTO.setData(savedEmployee);
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
 
 
     }

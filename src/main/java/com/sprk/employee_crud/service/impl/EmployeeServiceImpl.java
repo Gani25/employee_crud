@@ -1,19 +1,22 @@
 package com.sprk.employee_crud.service.impl;
 
+import com.sprk.employee_crud.constant.EmployeeConstants;
 import com.sprk.employee_crud.dto.EmployeeDTO;
 import com.sprk.employee_crud.entity.Employee;
+import com.sprk.employee_crud.exception.EmployeeAlreadyExists;
 import com.sprk.employee_crud.mapper.EmployeeMapper;
 import com.sprk.employee_crud.repository.EmployeeRepository;
 import com.sprk.employee_crud.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
     // Field Injection
@@ -35,13 +38,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
         Optional<Employee> dbOptionalEmployee = employeeRepository.findByEmailOrPhone(employee.getEmail(), employee.getPhone());
-        if(dbOptionalEmployee.isPresent()){
-            return null;
+        if (dbOptionalEmployee.isPresent()) {
+            throw new EmployeeAlreadyExists(EmployeeConstants.MESSAGE_400, HttpStatus.valueOf(Integer.parseInt(EmployeeConstants.STATUS_400)));
         }
 
         // check if employee not exists by same email or phone then only save
 //        System.out.println(employee);
-        Employee savedEmployee =  employeeRepository.save(employee);
+        Employee savedEmployee = employeeRepository.save(employee);
 
         return employeeMapper.mapEmployeeToEmployeeDTO(savedEmployee);
     }

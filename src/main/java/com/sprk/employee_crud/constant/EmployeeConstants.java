@@ -8,5 +8,5 @@ public class EmployeeConstants {
     public static final String MESSAGE_200 = "Request processed successfully";
 
     public static final String STATUS_400 = "400";
-    public static final String MESSAGE_400 = "Employee already exists";
+    public static final String MESSAGE_400 = "Employee with email or phone already exists";
 }

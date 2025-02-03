@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -30,7 +31,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         List<ObjectError> validationErrorList = ex.getBindingResult().getAllErrors();
 
         validationErrorList.forEach(error -> {
-            String fieldName = ((FieldError)error).getField();
+            String fieldName = ((FieldError) error).getField();
             String validationErrorMsg = error.getDefaultMessage();
 
             validationErrors.put(fieldName, validationErrorMsg);
@@ -43,5 +44,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         errorResponseDTO.setErrorMessage(validationErrors);
 
         return new ResponseEntity<>(errorResponseDTO, headers, status);
+    }
+
+    @ExceptionHandler(EmployeeException.class)
+    public ResponseEntity<ErrorResponseDTO<String>> handleEmployeeException(EmployeeException ex, WebRequest request) {
+        ErrorResponseDTO<String> errorResponseDTO = new ErrorResponseDTO<>();
+        errorResponseDTO.setApiPath(request.getDescription(false));
+        errorResponseDTO.setTimestamp(LocalDateTime.now());
+        errorResponseDTO.setErrorMessage(ex.getMessage());
+        errorResponseDTO.setErrorCode(ex.getStatus());
+
+        return new ResponseEntity<>(errorResponseDTO, ex.getStatus());
     }
 }
