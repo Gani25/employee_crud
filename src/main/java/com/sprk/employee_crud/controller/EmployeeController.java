@@ -10,10 +10,9 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/sprk")
@@ -24,7 +23,7 @@ public class EmployeeController {
 
 
     // create -> save -> post mapping
-    @PostMapping("/employee")
+    @PostMapping("/employees")
     public ResponseEntity<?> addEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
 
 //        System.out.println(employeeDTO.toString());
@@ -38,6 +37,18 @@ public class EmployeeController {
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
 
 
+    }
+
+    @GetMapping("/employees")
+    public ResponseEntity<?> getAllEmployees() {
+        List<EmployeeDTO> employeeDTOList =  employeeService.getAllEmployees();
+
+        ResponseDTO<List<EmployeeDTO>> responseDTO = new ResponseDTO<>();
+        responseDTO.setMessage(EmployeeConstants.MESSAGE_200);
+        responseDTO.setStatusCode(EmployeeConstants.STATUS_200);
+        responseDTO.setData(employeeDTOList);
+
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
 }
