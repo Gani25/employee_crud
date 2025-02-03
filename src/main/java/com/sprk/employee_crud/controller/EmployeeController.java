@@ -51,4 +51,16 @@ public class EmployeeController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
+    @GetMapping("/employees/{empId}")
+    public ResponseEntity<?> getEmployeeById(@PathVariable String empId) {
+
+        EmployeeDTO employeeDTO = employeeService.getEmployeeByEmpId(empId);
+        ResponseDTO<EmployeeDTO> responseDTO = new ResponseDTO<>();
+        responseDTO.setMessage(EmployeeConstants.MESSAGE_200);
+        responseDTO.setStatusCode(EmployeeConstants.STATUS_200);
+        responseDTO.setData(employeeDTO);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+    }
+
 }

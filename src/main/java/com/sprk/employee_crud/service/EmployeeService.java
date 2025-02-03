@@ -12,4 +12,6 @@ public interface EmployeeService {
     public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO);
 
     List<EmployeeDTO> getAllEmployees();
+
+    EmployeeDTO getEmployeeByEmpId(String empId);
 }

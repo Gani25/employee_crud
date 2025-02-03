@@ -9,4 +9,7 @@ public class EmployeeConstants {
 
     public static final String STATUS_400 = "400";
     public static final String MESSAGE_400 = "Employee with email or phone already exists";
+
+    public static final String MESSAGE_400_INVALID = "Employee id should be number only";
+    public static final String MESSAGE_400_NOT_FOUND = "Employee with emp id: %d not found";
 }

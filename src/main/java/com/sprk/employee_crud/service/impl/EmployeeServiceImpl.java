@@ -4,6 +4,8 @@ import com.sprk.employee_crud.constant.EmployeeConstants;
 import com.sprk.employee_crud.dto.EmployeeDTO;
 import com.sprk.employee_crud.entity.Employee;
 import com.sprk.employee_crud.exception.EmployeeAlreadyExists;
+import com.sprk.employee_crud.exception.EmployeeIdException;
+import com.sprk.employee_crud.exception.EmployeeNotFoundException;
 import com.sprk.employee_crud.mapper.EmployeeMapper;
 import com.sprk.employee_crud.repository.EmployeeRepository;
 import com.sprk.employee_crud.service.EmployeeService;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,5 +65,20 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .toList();
 
         return employeeDTOS;
+    }
+
+    @Override
+    public EmployeeDTO getEmployeeByEmpId(String empId) {
+        if (!empId.matches("\\d+")) {
+            throw new EmployeeIdException(EmployeeConstants.MESSAGE_400_INVALID, HttpStatus.valueOf(Integer.parseInt(EmployeeConstants.STATUS_400)));
+        }
+
+        int eId = Integer.parseInt(empId);
+        Employee employee = employeeRepository
+                .findById(eId)
+                .orElseThrow(() -> new EmployeeNotFoundException(
+                        String.format(EmployeeConstants.MESSAGE_400_NOT_FOUND, eId),
+                        HttpStatus.valueOf(Integer.parseInt(EmployeeConstants.STATUS_400))));
+        return employeeMapper.mapEmployeeToEmployeeDTO(employee);
     }
 }
