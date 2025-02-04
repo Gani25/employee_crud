@@ -81,4 +81,15 @@ public class EmployeeServiceImpl implements EmployeeService {
                         HttpStatus.valueOf(Integer.parseInt(EmployeeConstants.STATUS_400))));
         return employeeMapper.mapEmployeeToEmployeeDTO(employee);
     }
+
+    @Override
+    public EmployeeDTO deleteById(String empId) {
+        // Find Employee By Id
+        EmployeeDTO employeeDTO = getEmployeeByEmpId(empId);
+
+//        If Exists then Only Delete
+        employeeRepository.delete(employeeMapper.mapEmployeeDTOToEmployee(employeeDTO));
+
+        return employeeDTO;
+    }
 }

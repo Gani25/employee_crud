@@ -63,4 +63,20 @@ public class EmployeeController {
 
     }
 
+    @DeleteMapping("/employees/{empId}")
+    public ResponseEntity<?> deleteEmployeeById(@PathVariable String empId) {
+
+        EmployeeDTO deletedEmployeeDto = employeeService.deleteById(empId);
+        ResponseDTO<EmployeeDTO> responseDTO = new ResponseDTO<>();
+
+        responseDTO.setMessage(String.format(EmployeeConstants.MESSAGE_202, deletedEmployeeDto.getEmpId()));
+        responseDTO.setStatusCode(EmployeeConstants.STATUS_202);
+        responseDTO.setData(deletedEmployeeDto);
+        return new ResponseEntity<>(responseDTO, HttpStatus.valueOf(Integer.parseInt(EmployeeConstants.STATUS_202)));
+
+    }
+
+    // Update
+//    path variable, request body
+
 }
