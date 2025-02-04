@@ -43,9 +43,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeMapper.mapEmployeeDTOToEmployee(employeeDTO);
 
 
-        Optional<Employee> dbOptionalEmployee = employeeRepository.findByEmailOrPhone(employee.getEmail(), employee.getPhone());
-        if (dbOptionalEmployee.isPresent()) {
-            throw new EmployeeAlreadyExists(EmployeeConstants.MESSAGE_400, HttpStatus.valueOf(Integer.parseInt(EmployeeConstants.STATUS_400)));
+        List<Employee> employeesWithEmailOrPhone = employeeRepository.findByEmailOrPhone(employee.getEmail(), employee.getPhone());
+        // If at least one employee exists, throw an error
+        if (!employeesWithEmailOrPhone.isEmpty()) {
+            throw new EmployeeAlreadyExists(EmployeeConstants.MESSAGE_400,
+                    HttpStatus.valueOf(Integer.parseInt(EmployeeConstants.STATUS_400)));
         }
 
         // check if employee not exists by same email or phone then only save
@@ -91,5 +93,39 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.delete(employeeMapper.mapEmployeeDTOToEmployee(employeeDTO));
 
         return employeeDTO;
+    }
+
+    @Override
+    public EmployeeDTO updateEmployeeById(String empId, EmployeeDTO employeeDTO) {
+        EmployeeDTO existingEmployeeDto = getEmployeeByEmpId(empId);
+
+        List<Employee> employeesWithEmailOrPhone = employeeRepository.findByEmailOrPhone(employeeDTO.getEmail(), employeeDTO.getPhone());
+
+        // Check if any of these employees are not the one being updated
+        boolean isConflict = employeesWithEmailOrPhone.stream()
+                .anyMatch(emp -> !String.valueOf(emp.getEmpId()).equals(empId));
+
+        if (isConflict) {
+            throw new EmployeeAlreadyExists(EmployeeConstants.MESSAGE_400,
+                    HttpStatus.valueOf(Integer.parseInt(EmployeeConstants.STATUS_400)));
+        }
+
+        if(employeeDTO.getPhone() != null){
+            existingEmployeeDto.setPhone(employeeDTO.getPhone());
+        }
+        if(employeeDTO.getEmail() != null){
+            existingEmployeeDto.setEmail(employeeDTO.getEmail());
+        }
+        if(employeeDTO.getEmpName() != null){
+            existingEmployeeDto.setEmpName(employeeDTO.getEmpName());
+        }
+        if(employeeDTO.getGender()!= null){
+            existingEmployeeDto.setGender(employeeDTO.getGender());
+        }
+
+        Employee updatedEmployee = employeeRepository.save(employeeMapper.mapEmployeeDTOToEmployee(existingEmployeeDto));
+
+
+        return employeeMapper.mapEmployeeToEmployeeDTO(updatedEmployee);
     }
 }

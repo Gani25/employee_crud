@@ -41,7 +41,7 @@ public class EmployeeController {
 
     @GetMapping("/employees")
     public ResponseEntity<?> getAllEmployees() {
-        List<EmployeeDTO> employeeDTOList =  employeeService.getAllEmployees();
+        List<EmployeeDTO> employeeDTOList = employeeService.getAllEmployees();
 
         ResponseDTO<List<EmployeeDTO>> responseDTO = new ResponseDTO<>();
         responseDTO.setMessage(EmployeeConstants.MESSAGE_200);
@@ -77,6 +77,18 @@ public class EmployeeController {
     }
 
     // Update
-//    path variable, request body
+    // path variable, request body
+    @PutMapping("/employees/{empId}")
+    public ResponseEntity<?> updateEmployee(@PathVariable String empId, @Valid @RequestBody EmployeeDTO employeeDTO) {
+        EmployeeDTO updatedEmployeeDto = employeeService.updateEmployeeById(empId, employeeDTO);
+
+        ResponseDTO<EmployeeDTO> responseDTO = new ResponseDTO();
+
+        responseDTO.setMessage(String.format(EmployeeConstants.MESSAGE_UPDATE_201, updatedEmployeeDto.getEmpId()));
+        responseDTO.setStatusCode(EmployeeConstants.STATUS_201);
+        responseDTO.setData(updatedEmployeeDto);
+        return new ResponseEntity<>(responseDTO, HttpStatus.valueOf(Integer.parseInt(EmployeeConstants.STATUS_201)));
+    }
+
 
 }

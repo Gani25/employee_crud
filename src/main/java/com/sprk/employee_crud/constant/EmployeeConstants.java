@@ -4,6 +4,7 @@ public class EmployeeConstants {
 
     public static final String STATUS_201 = "201";
     public static final String MESSAGE_201 = "Employee created successfully";
+    public static final String MESSAGE_UPDATE_201 = "Employee with emp id %d is updated successfully";
     public static final String STATUS_200 = "200";
     public static final String MESSAGE_200 = "Request processed successfully";
 
