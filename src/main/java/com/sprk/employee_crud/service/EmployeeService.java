@@ -1,6 +1,7 @@
 package com.sprk.employee_crud.service;
 
 import com.sprk.employee_crud.dto.EmployeeDTO;
+import com.sprk.employee_crud.dto.EmployeeDetailDTO;
 import com.sprk.employee_crud.entity.Employee;
 import com.sprk.employee_crud.repository.EmployeeRepository;
 
@@ -18,4 +19,6 @@ public interface EmployeeService {
     EmployeeDTO deleteById(String empId);
 
     EmployeeDTO updateEmployeeById(String empId, EmployeeDTO employeeDTO);
+
+    EmployeeDTO saveEmployeeDetail(String empId, EmployeeDetailDTO employeeDetailDTO);
 }

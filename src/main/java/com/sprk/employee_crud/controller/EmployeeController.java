@@ -2,6 +2,7 @@ package com.sprk.employee_crud.controller;
 
 import com.sprk.employee_crud.constant.EmployeeConstants;
 import com.sprk.employee_crud.dto.EmployeeDTO;
+import com.sprk.employee_crud.dto.EmployeeDetailDTO;
 import com.sprk.employee_crud.dto.ResponseDTO;
 import com.sprk.employee_crud.entity.Employee;
 import com.sprk.employee_crud.service.EmployeeService;
@@ -32,6 +33,23 @@ public class EmployeeController {
         ResponseDTO<EmployeeDTO> responseDTO = new ResponseDTO();
 
         responseDTO.setMessage(EmployeeConstants.MESSAGE_201);
+        responseDTO.setStatusCode(EmployeeConstants.STATUS_201);
+        responseDTO.setData(savedEmployee);
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+
+
+    }
+
+    // save only employee detail basically update employee and add employee detail
+
+    @PutMapping("/employees/employee-details/{empId}")
+    public ResponseEntity<?> addEmployeeDetail(@PathVariable String empId, @Valid @RequestBody EmployeeDetailDTO employeeDetailDTO) {
+
+
+        EmployeeDTO savedEmployee = employeeService.saveEmployeeDetail(empId,employeeDetailDTO);
+        ResponseDTO<EmployeeDTO> responseDTO = new ResponseDTO();
+
+        responseDTO.setMessage(EmployeeConstants.MESSAGE_UPDATE_201);
         responseDTO.setStatusCode(EmployeeConstants.STATUS_201);
         responseDTO.setData(savedEmployee);
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);

@@ -103,7 +103,24 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new EmployeeNotFoundException(
                         String.format(EmployeeConstants.MESSAGE_400_NOT_FOUND, eId),
                         HttpStatus.valueOf(Integer.parseInt(EmployeeConstants.STATUS_400))));
-        return employeeMapper.mapEmployeeToEmployeeDTO(employee);
+        EmployeeDTO employeeDTO = employeeMapper.mapEmployeeToEmployeeDTO(employee);
+        System.out.println(employee.getEmployeeDetail().getHobby());
+        System.out.println(employee.getEmployeeDetail().getQualification());
+        System.out.println(employee.getEmployeeDetail().getEmpDetailId());
+        employeeDTO.setEmployeeDetailDTO
+                (
+                        employeeDetailMapper
+                                .employeeDetailToEmployeeDetailDTO
+                                        (
+                                                employee
+                                                        .getEmployeeDetail()
+                                        )
+                );
+        System.out.println("Employee Detail DTO");
+        System.out.println(employeeDTO.getEmployeeDetailDTO().getHobby());
+        System.out.println(employeeDTO.getEmployeeDetailDTO().getQualification());
+        System.out.println(employeeDTO.getEmployeeDetailDTO().getEmpDetailId());
+        return employeeDTO;
     }
 
     @Override
@@ -149,5 +166,30 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
         return employeeMapper.mapEmployeeToEmployeeDTO(updatedEmployee);
+    }
+
+    @Override
+    public EmployeeDTO saveEmployeeDetail(String empId, EmployeeDetailDTO employeeDetailDTO) {
+        EmployeeDTO existingEmployeeDto = getEmployeeByEmpId(empId);
+
+        // Logic to update
+        Employee existingEmployee = employeeMapper.mapEmployeeDTOToEmployee(existingEmployeeDto);
+
+        employeeDetailDTO.setEmpDetailId(existingEmployeeDto.getEmployeeDetailDTO().getEmpDetailId());
+        existingEmployee.setEmployeeDetail(
+                employeeDetailMapper.employeeDetailDTOToEmployeeDetail(employeeDetailDTO)
+        );
+
+        Employee updatedEmployee = employeeRepository.save(existingEmployee); // Bcoz Of Id it will update
+
+        EmployeeDTO updatedEmployeeDTO = employeeMapper.mapEmployeeToEmployeeDTO(updatedEmployee);
+
+        updatedEmployeeDTO.setEmployeeDetailDTO(employeeDetailMapper
+                .employeeDetailToEmployeeDetailDTO(
+                        updatedEmployee.getEmployeeDetail()
+                )
+        );
+
+        return updatedEmployeeDTO;
     }
 }
