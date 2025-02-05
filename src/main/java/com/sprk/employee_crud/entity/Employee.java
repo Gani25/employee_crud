@@ -29,5 +29,10 @@ public class Employee {
 
     private String gender;
 
+    // Relationship
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "emp_detail_id")
+    private EmployeeDetail employeeDetail;
+
 
 }

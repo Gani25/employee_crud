@@ -30,5 +30,7 @@ public class EmployeeDTO {
 
     private String gender;
 
+    private EmployeeDetailDTO employeeDetailDTO;
+
 }
 

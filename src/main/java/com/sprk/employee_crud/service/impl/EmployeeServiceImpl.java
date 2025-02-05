@@ -2,10 +2,13 @@ package com.sprk.employee_crud.service.impl;
 
 import com.sprk.employee_crud.constant.EmployeeConstants;
 import com.sprk.employee_crud.dto.EmployeeDTO;
+import com.sprk.employee_crud.dto.EmployeeDetailDTO;
 import com.sprk.employee_crud.entity.Employee;
+import com.sprk.employee_crud.entity.EmployeeDetail;
 import com.sprk.employee_crud.exception.EmployeeAlreadyExists;
 import com.sprk.employee_crud.exception.EmployeeIdException;
 import com.sprk.employee_crud.exception.EmployeeNotFoundException;
+import com.sprk.employee_crud.mapper.EmployeeDetailMapper;
 import com.sprk.employee_crud.mapper.EmployeeMapper;
 import com.sprk.employee_crud.repository.EmployeeRepository;
 import com.sprk.employee_crud.service.EmployeeService;
@@ -31,6 +34,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeMapper employeeMapper;
 
+    private final EmployeeDetailMapper employeeDetailMapper;
+
     /*
     // constructor injection
     @Autowired
@@ -40,7 +45,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO) {
+        EmployeeDetailDTO employeeDetailDTO = employeeDTO.getEmployeeDetailDTO();
+
+        EmployeeDetail employeeDetail = null;
+        if (employeeDetailDTO != null) {
+            employeeDetail = employeeDetailMapper.employeeDetailDTOToEmployeeDetail(employeeDetailDTO);
+        }
         Employee employee = employeeMapper.mapEmployeeDTOToEmployee(employeeDTO);
+        employee.setEmployeeDetail(employeeDetail);
 
 
         List<Employee> employeesWithEmailOrPhone = employeeRepository.findByEmailOrPhone(employee.getEmail(), employee.getPhone());
@@ -54,7 +66,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 //        System.out.println(employee);
         Employee savedEmployee = employeeRepository.save(employee);
 
-        return employeeMapper.mapEmployeeToEmployeeDTO(savedEmployee);
+
+        EmployeeDTO savedEmployeeDTO = employeeMapper.mapEmployeeToEmployeeDTO(savedEmployee);
+        savedEmployeeDTO.setEmployeeDetailDTO(
+                employeeDetailMapper
+                        .employeeDetailToEmployeeDetailDTO(
+                                savedEmployee
+                                        .getEmployeeDetail()
+                        )
+        );
+
+        return savedEmployeeDTO;
     }
 
     @Override
@@ -110,16 +132,16 @@ public class EmployeeServiceImpl implements EmployeeService {
                     HttpStatus.valueOf(Integer.parseInt(EmployeeConstants.STATUS_400)));
         }
 
-        if(employeeDTO.getPhone() != null){
+        if (employeeDTO.getPhone() != null) {
             existingEmployeeDto.setPhone(employeeDTO.getPhone());
         }
-        if(employeeDTO.getEmail() != null){
+        if (employeeDTO.getEmail() != null) {
             existingEmployeeDto.setEmail(employeeDTO.getEmail());
         }
-        if(employeeDTO.getEmpName() != null){
+        if (employeeDTO.getEmpName() != null) {
             existingEmployeeDto.setEmpName(employeeDTO.getEmpName());
         }
-        if(employeeDTO.getGender()!= null){
+        if (employeeDTO.getGender() != null) {
             existingEmployeeDto.setGender(employeeDTO.getGender());
         }
 
